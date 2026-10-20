@@ -1,0 +1,643 @@
+{
+  "findings": [
+    {
+      "rule_id": "SIG-0009",
+      "severity": "medium",
+      "path": "fixtures/sig/inject.sh",
+      "line": 1,
+      "message": "Injection shell (substitution de commande, rm -rf cha\u00een\u00e9 ou curl cha\u00een\u00e9)",
+      "evidence": "$(curl"
+    },
+    {
+      "rule_id": "SIG-0009",
+      "severity": "medium",
+      "path": "fixtures/sig/inject.sh",
+      "line": 2,
+      "message": "Injection shell (substitution de commande, rm -rf cha\u00een\u00e9 ou curl cha\u00een\u00e9)",
+      "evidence": "`wget"
+    },
+    {
+      "rule_id": "SIG-0009",
+      "severity": "medium",
+      "path": "fixtures/sig/inject.sh",
+      "line": 3,
+      "message": "Injection shell (substitution de commande, rm -rf cha\u00een\u00e9 ou curl cha\u00een\u00e9)",
+      "evidence": ";rm -rf"
+    },
+    {
+      "rule_id": "SIG-0009",
+      "severity": "medium",
+      "path": "fixtures/sig/inject.sh",
+      "line": 4,
+      "message": "Injection shell (substitution de commande, rm -rf cha\u00een\u00e9 ou curl cha\u00een\u00e9)",
+      "evidence": "&& curl"
+    },
+    {
+      "rule_id": "SIG-0012",
+      "severity": "critical",
+      "path": "fixtures/sig/jndi.txt",
+      "line": 1,
+      "message": "Log4Shell : lookup ${jndi:",
+      "evidence": "${jndi:"
+    },
+    {
+      "rule_id": "SIG-0001",
+      "severity": "critical",
+      "path": "fixtures/sig/webshell.php",
+      "line": 2,
+      "message": "Web shell PHP : eval, base64_decode ou commande shell sur une entr\u00e9e HTTP",
+      "evidence": "eval(base64_decode("
+    },
+    {
+      "rule_id": "SIG-0008",
+      "severity": "critical",
+      "path": "fixtures/sig/id_rsa",
+      "line": 1,
+      "message": "Cl\u00e9 priv\u00e9e en clair (RSA, OpenSSH, EC ou PKCS#8)",
+      "evidence": "-----BEGIN RSA PRIVATE KEY-----"
+    },
+    {
+      "rule_id": "SIG-0014",
+      "severity": "high",
+      "path": "fixtures/sig/.bashrc",
+      "line": 1,
+      "message": "Persistance shell dans .bashrc, .profile, .zshrc ou .bash_profile",
+      "evidence": "wget"
+    },
+    {
+      "rule_id": "SIG-0010",
+      "severity": "medium",
+      "path": "fixtures/sig/headers.txt",
+      "line": 2,
+      "message": "User-Agent d'outil d'attaque ou de client script\u00e9",
+      "evidence": "User-Agent: sqlmap/1.7"
+    },
+    {
+      "rule_id": "SIG-0008",
+      "severity": "critical",
+      "path": "fixtures/sig/openssh_key",
+      "line": 1,
+      "message": "Cl\u00e9 priv\u00e9e en clair (RSA, OpenSSH, EC ou PKCS#8)",
+      "evidence": "-----BEGIN OPENSSH PRIVATE KEY-----"
+    },
+    {
+      "rule_id": "SIG-0016",
+      "severity": "medium",
+      "path": "fixtures/sig/ld_preload.sh",
+      "line": 1,
+      "message": "LD_PRELOAD ou LD_LIBRARY_PATH pointant vers /tmp",
+      "evidence": "LD_PRELOAD=/tmp"
+    },
+    {
+      "rule_id": "SIG-0007",
+      "severity": "high",
+      "path": "fixtures/sig/authorized_keys",
+      "line": 1,
+      "message": "Cl\u00e9 SSH publique ajout\u00e9e dans authorized_keys",
+      "evidence": "ssh-ed25519"
+    },
+    {
+      "rule_id": "SIG-0007",
+      "severity": "high",
+      "path": "fixtures/sig/authorized_keys",
+      "line": 2,
+      "message": "Cl\u00e9 SSH publique ajout\u00e9e dans authorized_keys",
+      "evidence": "ssh-rsa"
+    },
+    {
+      "rule_id": "SIG-0008",
+      "severity": "critical",
+      "path": "fixtures/sig/ec_private.pem",
+      "line": 1,
+      "message": "Cl\u00e9 priv\u00e9e en clair (RSA, OpenSSH, EC ou PKCS#8)",
+      "evidence": "-----BEGIN EC PRIVATE KEY-----"
+    },
+    {
+      "rule_id": "SIG-0004",
+      "severity": "high",
+      "path": "fixtures/sig/encoded.txt",
+      "line": 1,
+      "message": "Ex\u00e9cution de charge encod\u00e9e (base64 -d|sh, eval(atob), powershell -enc)",
+      "evidence": "base64 -d payload.b64 | sh"
+    },
+    {
+      "rule_id": "SIG-0004",
+      "severity": "high",
+      "path": "fixtures/sig/encoded.txt",
+      "line": 2,
+      "message": "Ex\u00e9cution de charge encod\u00e9e (base64 -d|sh, eval(atob), powershell -enc)",
+      "evidence": "eval(atob("
+    },
+    {
+      "rule_id": "SIG-0004",
+      "severity": "high",
+      "path": "fixtures/sig/encoded.txt",
+      "line": 3,
+      "message": "Ex\u00e9cution de charge encod\u00e9e (base64 -d|sh, eval(atob), powershell -enc)",
+      "evidence": "powershell -enc"
+    },
+    {
+      "rule_id": "SIG-0001",
+      "severity": "critical",
+      "path": "fixtures/sig/bad_utf8.php",
+      "line": 1,
+      "message": "Web shell PHP : eval, base64_decode ou commande shell sur une entr\u00e9e HTTP",
+      "evidence": "eval(base64_decode("
+    },
+    {
+      "rule_id": "SIG-0015",
+      "severity": "high",
+      "path": "fixtures/sig/sudoers",
+      "line": 1,
+      "message": "Modification d'identit\u00e9s (passwd :0:0: ou sudoers NOPASSWD / ALL=(ALL))",
+      "evidence": "NOPASSWD: ALL"
+    },
+    {
+      "rule_id": "SIG-0003",
+      "severity": "high",
+      "path": "fixtures/sig/crontab.txt",
+      "line": 1,
+      "message": "T\u00e9l\u00e9chargement puis ex\u00e9cution (curl|sh, wget|bash, python -c avec urllib et exec)",
+      "evidence": "l http://evil.example/a | sh"
+    },
+    {
+      "rule_id": "SIG-0003",
+      "severity": "high",
+      "path": "fixtures/sig/crontab.txt",
+      "line": 2,
+      "message": "T\u00e9l\u00e9chargement puis ex\u00e9cution (curl|sh, wget|bash, python -c avec urllib et exec)",
+      "evidence": "- http://evil.example/b | bash"
+    },
+    {
+      "rule_id": "SIG-0006",
+      "severity": "high",
+      "path": "fixtures/sig/crontab.txt",
+      "line": 1,
+      "message": "Persistance cron (@reboot, ou cinq champs * ou */N, avec curl, wget ou nc)",
+      "evidence": "@reboot"
+    },
+    {
+      "rule_id": "SIG-0006",
+      "severity": "high",
+      "path": "fixtures/sig/crontab.txt",
+      "line": 2,
+      "message": "Persistance cron (@reboot, ou cinq champs * ou */N, avec curl, wget ou nc)",
+      "evidence": "wget"
+    },
+    {
+      "rule_id": "SIG-0011",
+      "severity": "critical",
+      "path": "fixtures/sig/webshell.jsp",
+      "line": 1,
+      "message": "Web shell JSP/ASP (Runtime.exec, Execute ou eval request dans un bloc <% )",
+      "evidence": "<% Runtime.getRuntime().exec("
+    },
+    {
+      "rule_id": "SIG-0003",
+      "severity": "high",
+      "path": "fixtures/sig/download.sh",
+      "line": 1,
+      "message": "T\u00e9l\u00e9chargement puis ex\u00e9cution (curl|sh, wget|bash, python -c avec urllib et exec)",
+      "evidence": "L http://evil.example/x | sh"
+    },
+    {
+      "rule_id": "SIG-0003",
+      "severity": "high",
+      "path": "fixtures/sig/download.sh",
+      "line": 2,
+      "message": "T\u00e9l\u00e9chargement puis ex\u00e9cution (curl|sh, wget|bash, python -c avec urllib et exec)",
+      "evidence": "- http://evil.example/x | bash"
+    },
+    {
+      "rule_id": "SIG-0003",
+      "severity": "high",
+      "path": "fixtures/sig/download.sh",
+      "line": 3,
+      "message": "T\u00e9l\u00e9chargement puis ex\u00e9cution (curl|sh, wget|bash, python -c avec urllib et exec)",
+      "evidence": "python -c 'import urllib; exec("
+    },
+    {
+      "rule_id": "SIG-0008",
+      "severity": "critical",
+      "path": "fixtures/sig/pkcs8.pem",
+      "line": 1,
+      "message": "Cl\u00e9 priv\u00e9e en clair (RSA, OpenSSH, EC ou PKCS#8)",
+      "evidence": "-----BEGIN PRIVATE KEY-----"
+    },
+    {
+      "rule_id": "SIG-0002",
+      "severity": "critical",
+      "path": "fixtures/sig/reverse.sh",
+      "line": 1,
+      "message": "Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)",
+      "evidence": "bash -i"
+    },
+    {
+      "rule_id": "SIG-0002",
+      "severity": "critical",
+      "path": "fixtures/sig/reverse.sh",
+      "line": 2,
+      "message": "Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)",
+      "evidence": "nc -e"
+    },
+    {
+      "rule_id": "SIG-0002",
+      "severity": "critical",
+      "path": "fixtures/sig/reverse.sh",
+      "line": 3,
+      "message": "Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)",
+      "evidence": "ncat"
+    },
+    {
+      "rule_id": "SIG-0002",
+      "severity": "critical",
+      "path": "fixtures/sig/reverse.sh",
+      "line": 4,
+      "message": "Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)",
+      "evidence": "socat tcp-listen:4444,reuseaddr exec"
+    },
+    {
+      "rule_id": "SIG-0015",
+      "severity": "high",
+      "path": "fixtures/sig/passwd",
+      "line": 1,
+      "message": "Modification d'identit\u00e9s (passwd :0:0: ou sudoers NOPASSWD / ALL=(ALL))",
+      "evidence": ":0:0:"
+    },
+    {
+      "rule_id": "SIG-0005",
+      "severity": "high",
+      "path": "fixtures/sig/miner.conf",
+      "line": 1,
+      "message": "Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)",
+      "evidence": "stratum+tcp"
+    },
+    {
+      "rule_id": "SIG-0005",
+      "severity": "high",
+      "path": "fixtures/sig/miner.conf",
+      "line": 2,
+      "message": "Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)",
+      "evidence": "xmrig"
+    },
+    {
+      "rule_id": "SIG-0005",
+      "severity": "high",
+      "path": "fixtures/sig/miner.conf",
+      "line": 3,
+      "message": "Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)",
+      "evidence": "minerd"
+    },
+    {
+      "rule_id": "SIG-0013",
+      "severity": "high",
+      "path": "fixtures/sig/.htaccess",
+      "line": 1,
+      "message": "Directive .htaccess dangereuse (auto_prepend ou AddType PHP)",
+      "evidence": "php_value auto_prepend_file"
+    },
+    {
+      "rule_id": "SIG-0013",
+      "severity": "high",
+      "path": "fixtures/sig/.htaccess",
+      "line": 2,
+      "message": "Directive .htaccess dangereuse (auto_prepend ou AddType PHP)",
+      "evidence": "AddType application/x-httpd-php"
+    }
+  ],
+  "severity_counts": {
+    "critical": 12,
+    "high": 20,
+    "medium": 6,
+    "low": 0
+  },
+  "overall_severity": "critical",
+  "integrity_counts": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "mode_changed": 0
+  },
+  "anomalies": [
+    {
+      "path": "tests/__init__.py",
+      "score": 100.0,
+      "entropy": 0.0,
+      "max_line_len": 0,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 0.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/test_signatures.py",
+      "score": 100.0,
+      "entropy": 4.797226821546353,
+      "max_line_len": 97,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.05536568694463431,
+      "avg_line_len": 40.32768361581921,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/high_entropy.txt",
+      "score": 100.0,
+      "entropy": 5.974256134291344,
+      "max_line_len": 800,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 800.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/test_neural.py",
+      "score": 100.0,
+      "entropy": 4.665562440360036,
+      "max_line_len": 91,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.04411343454597536,
+      "avg_line_len": 35.747368421052634,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/jndi.txt",
+      "score": 100.0,
+      "entropy": 4.941882614418814,
+      "max_line_len": 127,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0234375,
+      "avg_line_len": 127.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/webshell.php",
+      "score": 100.0,
+      "entropy": 4.843094990837057,
+      "max_line_len": 33,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.14583333333333334,
+      "avg_line_len": 23.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/id_rsa",
+      "score": 100.0,
+      "entropy": 4.080651098738243,
+      "max_line_len": 31,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 27.666666666666668,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/.bashrc",
+      "score": 100.0,
+      "entropy": 4.565279521468516,
+      "max_line_len": 53,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.1111111111111111,
+      "avg_line_len": 53.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/headers.txt",
+      "score": 100.0,
+      "entropy": 4.704783547037795,
+      "max_line_len": 22,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 20.333333333333332,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/openssh_key",
+      "score": 100.0,
+      "entropy": 4.471817503805154,
+      "max_line_len": 35,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 31.666666666666668,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/ld_preload.sh",
+      "score": 100.0,
+      "entropy": 4.50258340716107,
+      "max_line_len": 30,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 30.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/authorized_keys",
+      "score": 100.0,
+      "entropy": 4.82622733696281,
+      "max_line_len": 77,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 76.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/ec_private.pem",
+      "score": 100.0,
+      "entropy": 4.042956781032247,
+      "max_line_len": 30,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 26.333333333333332,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/encoded.txt",
+      "score": 100.0,
+      "entropy": 5.3301673695490965,
+      "max_line_len": 60,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.03787878787878788,
+      "avg_line_len": 43.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/bad_utf8.php",
+      "score": 100.0,
+      "entropy": 4.805911448133582,
+      "max_line_len": 43,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.20454545454545456,
+      "avg_line_len": 43.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/sudoers",
+      "score": 100.0,
+      "entropy": 4.066677073707229,
+      "max_line_len": 32,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.06060606060606061,
+      "avg_line_len": 32.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/webshell.jsp",
+      "score": 100.0,
+      "entropy": 4.365430286773682,
+      "max_line_len": 61,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.14516129032258066,
+      "avg_line_len": 61.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/pkcs8.pem",
+      "score": 100.0,
+      "entropy": 4.520339539093303,
+      "max_line_len": 55,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 35.666666666666664,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/reverse.sh",
+      "score": 100.0,
+      "entropy": 4.496027060245938,
+      "max_line_len": 48,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.02702702702702703,
+      "avg_line_len": 36.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/passwd",
+      "score": 100.0,
+      "entropy": 3.9492049741940667,
+      "max_line_len": 36,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 36.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/crontab.txt",
+      "score": 86.89790426190739,
+      "entropy": 4.520617741882558,
+      "max_line_len": 53,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.02127659574468085,
+      "avg_line_len": 46.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/.htaccess",
+      "score": 76.97101569941306,
+      "entropy": 4.311858055871328,
+      "max_line_len": 38,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 37.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/download.sh",
+      "score": 73.0778346851823,
+      "entropy": 4.809013412028069,
+      "max_line_len": 87,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.05454545454545454,
+      "avg_line_len": 54.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/test_scan_empty.py",
+      "score": 47.68914118319751,
+      "entropy": 4.363581168861638,
+      "max_line_len": 83,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.025619128949615714,
+      "avg_line_len": 34.484848484848484,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/miner.conf",
+      "score": 36.1897649822951,
+      "entropy": 4.456129231821867,
+      "max_line_len": 33,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 24.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/sig/inject.sh",
+      "score": 30.678579561948435,
+      "entropy": 4.582578132604394,
+      "max_line_len": 42,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.075,
+      "avg_line_len": 29.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/benign/client.js",
+      "score": 20.0,
+      "entropy": 4.554243146027515,
+      "max_line_len": 60,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.12267657992565056,
+      "avg_line_len": 23.454545454545453,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/benign/README.md",
+      "score": 10.619281605388798,
+      "entropy": 4.595763181773839,
+      "max_line_len": 41,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.04195804195804196,
+      "avg_line_len": 12.0,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/benign/config.json",
+      "score": 4.990442587675765,
+      "entropy": 4.435864494442832,
+      "max_line_len": 55,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0136986301369863,
+      "avg_line_len": 19.857142857142858,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/benign/metadata.txt",
+      "score": 3.964853974506794,
+      "entropy": 4.654476034217671,
+      "max_line_len": 79,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0,
+      "avg_line_len": 28.125,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/benign/utils.py",
+      "score": 2.761250632891607,
+      "entropy": 4.389875721176739,
+      "max_line_len": 36,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.06666666666666667,
+      "avg_line_len": 9.588235294117647,
+      "method": "autoencoder"
+    },
+    {
+      "path": "tests/fixtures/benign/styles.css",
+      "score": 1.5478930909506752,
+      "entropy": 4.457174382109942,
+      "max_line_len": 28,
+      "nonprintable_ratio": 0.0,
+      "shell_metachar_ratio": 0.0625,
+      "avg_line_len": 11.0,
+      "method": "autoencoder"
+    }
+  ]
+}

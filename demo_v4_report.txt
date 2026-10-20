@@ -1,0 +1,30 @@
+SENTINEL
+overall_severity: critical
+severity_counts: critical=2 high=4 medium=0 low=0
+integrity_counts: added=1 removed=0 modified=1 mode_changed=1
+
+findings:
+[high] SIG-0007 authorized_keys:1
+  Clé SSH publique ajoutée dans authorized_keys
+  evidence: ssh-ed25519
+[high] SIG-0007 authorized_keys:2
+  Clé SSH publique ajoutée dans authorized_keys
+  evidence: ssh-ed25519
+[high] SIG-0019 authorized_keys:2
+  Clé SSH ajoutée à authorized_keys (intégrité × signature)
+  evidence: ssh-ed25519 <nouvelle clé>
+[high] SIG-0018 tool:1
+  Bit SUID acquis (mode=0o4755)
+  evidence: SUID=0o4000
+[critical] SIG-0002 etc/systemd/system/backdoor.service:2
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: bash -i
+[critical] SIG-0017 etc/systemd/system/backdoor.service:2
+  Unité systemd avec ExecStart suspect (reverse-shell, dropper, ou mineur)
+  evidence: bash -i
+
+integrity:
+added: etc/systemd/system/backdoor.service
+removed: (aucun)
+modified: authorized_keys
+mode_changed: tool

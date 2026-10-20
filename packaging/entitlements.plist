@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Seul entitlement nécessaire pour ce gel PyInstaller onedir + PySide6
+	  sous Hardened Runtime.
+
+	  CPython (libffi, donc ctypes, utilisé par shiboken/PySide6) et le
+	  bootloader PyInstaller allouent de la mémoire à la fois inscriptible
+	  et exécutable via mprotect, pas seulement via MAP_JIT.
+	  com.apple.security.cs.allow-jit ne couvre pas ce chemin : l'app est
+	  tuée au lancement. Voir https://github.com/pyinstaller/pyinstaller/issues/4629
+
+	  Pas de com.apple.security.cs.disable-library-validation : le gel est
+	  onedir (tout reste dans le .app) et chaque Mach-O est re-signé avec
+	  le même Developer ID, donc le même Team ID. La validation de
+	  bibliothèque accepte ce cas. L'extra n'est requis que pour le mode
+	  onefile, qui extrait un Python non signé dans un dossier temporaire.
+
+	  Pas de sandbox : Sentinel lit les dossiers choisis par l'utilisateur.
+	  Pas de allow-dyld-environment-variables, ni d'accès caméra/micro.
+	-->
+	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+	<true/>
+</dict>
+</plist>

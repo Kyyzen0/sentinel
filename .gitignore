@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Hypothesis — fuzzing cache (peut peser plusieurs Mo, régénérable).
+# Voir https://hypothesis.readthedocs.io/en/latest/database.html
+.hypothesis/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Certificats et clés Apple — ne jamais versionner.
+*.p12
+*.cer
+*.p8
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Fichiers de sortie générés (pas la peine de versionner, mais le modèle
+# neuronal `model.json` est conservé exprès — voir README).
+# demo_report.txt   ← versionné (référence V1 d'origine)
+# demo_v2_report.*  ← versionné (référence V2 d'origine)
+
+# Fichiers de trainset V3 (250 fichiers de la stdlib, regénérables via
+# tools/expand_trainset.py — ne pas versionner, taille ~1.2 MB).
+tests/fixtures/benign_large/
+
+# Fichiers de demo V4 (générés par tools/make_demo_v4.py — la baseline
+# pointe vers un temp dir disparu, le rapport est régénérable).
+demo_v4_baseline.json

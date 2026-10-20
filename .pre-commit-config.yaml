@@ -1,0 +1,77 @@
+# P4-A follow-up : pre-commit hooks pour catch les lints avant push.
+# Install : `pip install pre-commit` puis `pre-commit install` (une fois).
+# Ensuite, chaque `git commit` lance les hooks listés ci-dessous.
+# Si un hook échoue, le commit est refusé. Bypass : `git commit --no-verify`
+# (à éviter, mais utile en cas d'urgence).
+#
+# Note : les hooks sont aussi exécutés par `pre-commit.ci` sur les PRs
+# (gratuit pour les repos publics) — cf. https://pre-commit.ci.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        # Le `f"…"` multi-lignes peut finir par un espace, on exclut
+        # pour ne pas se battre avec des reformats spurieux.
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+        # pyproject.toml est du TOML, pas du YAML strict. On exclut.
+        exclude: ^pyproject\.toml$
+      - id: check-toml
+      - id: check-added-large-files
+        # Empêche de commit par accident un modèle neuronal ou un
+        # trainset de plusieurs MB.
+        args: [--maxkb=512]
+      - id: check-merge-conflict
+      - id: detect-private-key
+        # Catch les .pem/.key accidentellement ajoutés.
+        # Exclusions : les fixtures `tests/fixtures/sig/` contiennent
+        # des clés privées INTENTIONNELLES (pour tester SIG-0019 et la
+        # détection de clés SSH). Idem pour les rapports de démo qui
+        # contiennent les findings au format texte.
+        exclude: |
+          (?x)^(
+              tests/fixtures/.*|
+              demo_.*\.(txt|json)|
+              tests/test_p1_encrypted_baseline\.py|
+              sentinel/signatures\.py
+          )$
+      - id: mixed-line-ending
+        # Force LF (pas CRLF) — Windows users : configurez git
+        # `core.autocrlf false` avant.
+        # Exclusions : les rapports de démo JSON ont des \r\n pour
+        # rester compatibles avec les consommateurs Windows.
+        exclude: |
+          (?x)^(
+              demo_.*\.(txt|json)|
+              model.*\.json
+          )$
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.7.2
+    hooks:
+      # Le format doit passer AVANT le check (le check signale les
+      # diffs de format comme des erreurs de style).
+      - id: ruff-format
+        # Formate les fichiers staged (écrit sur disque si nécessaire).
+        files: '^(sentinel|tests|packaging)/.*\.py$'
+      - id: ruff
+        # `ruff check` : lint des règles activées dans pyproject.toml.
+        # On NE FIXE PAS auto (--fix) en pre-commit : ça surprend les
+        # nouveaux contributeurs. On signale, on laisse commit.
+        args: [--fix, --exit-non-zero-on-fix]
+        files: '^(sentinel|tests|packaging)/.*\.py$'
+
+  - repo: local
+    # Tests : on les lance sur le hook, mais avec un timeout court
+    # pour ne pas bloquer les commits sur les gros projets. Pour le
+    # feedback complet, la CI est l'autorité.
+    hooks:
+      - id: sentinel-tests-fast
+        name: sentinel tests (fast subset)
+        entry: python3 -m unittest discover -s tests -k 'not property_based and not p4_property' -v
+        language: system
+        pass_filenames: false
+        # ~5s sans les property-based (qui prennent 35s à eux seuls).
+        stages: [pre-commit]

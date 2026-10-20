@@ -1,0 +1,7 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "A simple example configuration file",
+  "main": "utils.py",
+  "dependencies": []
+}

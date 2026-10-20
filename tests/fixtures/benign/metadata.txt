@@ -1,0 +1,8 @@
+subject=Sentinel benign corpus
+author=qa
+keywords=test, normal, baseline
+category=documentation
+description=Trainset entry for the anomaly autoencoder. Nothing malicious here.
+version=1.0
+license=MIT
+url=https://example.local/benign

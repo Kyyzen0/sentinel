@@ -1,0 +1,3 @@
+# Marker file (PEP 561) — tells type-checkers (mypy, pyright, etc.) that
+# the `sentinel` package ships inline type annotations. Without this,
+# downstream users get "no type information" warnings.

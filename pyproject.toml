@@ -1,0 +1,172 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sentinel"
+version = "3.0.0"
+description = "Analyse de sécurité locale orientée fichiers (signatures + intégrité + autoencodeur neuronal)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Kyyzen0"},
+]
+keywords = [
+    "security", "scanner", "filesystem", "integrity",
+    "anomaly-detection", "autoencoder", "ai",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Security",
+    "Topic :: System :: Filesystems",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+# P4-B : dev-deps épinglées par floor (`>=X.Y`), pas par pin exact —
+# on n'est pas en production, on veut pouvoir suivre les patchs.
+dev = [
+    "hypothesis>=6.0",     # P4-C : property-based testing
+    "ruff>=0.1.0",         # P4-A : linter (CI)
+    # `coverage[toml]` : l'extra [toml] permet à coverage de lire la
+    # config depuis pyproject.toml. Sur Python 3.11+ c'est optionnel
+    # (tomlib stdlib), sur 3.10 c'est obligatoire (tomli).
+    "coverage[toml]>=7.0",
+    "pre-commit>=3.5",     # P4-A follow-up : hooks pre-commit (ruff + tests)
+    "mypy>=1.8",           # typage statique (CI). python_version mypy = 3.10
+    "pytest>=7",
+    "pytest-qt>=4.2",
+]
+test = [
+    "hypothesis>=6.0",
+]
+# Interface bureau. Le cœur n'importe pas PySide6.
+gui = [
+    "PySide6>=6.6",
+]
+# Trousseau optionnel. Sans ce paquet, la clé reste en mémoire de session.
+keyring = [
+    "keyring>=24",
+]
+bundle = [
+    "pyinstaller>=6",
+]
+
+[project.scripts]
+# P4-B : console script — après `pip install -e .`, l'utilisateur
+# peut invoquer `sentinel` directement, plus besoin de `python3 -m`.
+sentinel = "sentinel.__main__:main"
+sentinel-gui = "sentinel.gui:main"
+
+[project.urls]
+Homepage = "https://github.com/Kyyzen0/sentinel"
+Issues = "https://github.com/Kyyzen0/sentinel/issues"
+Changelog = "https://github.com/Kyyzen0/sentinel/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+include = ["sentinel*"]
+
+[tool.setuptools.package-data]
+# P4-B : PEP 561 — déclare le package comme « typed » pour les
+# consommateurs qui font du type-checking statique (mypy, pyright).
+sentinel = ["py.typed"]
+
+[tool.ruff]
+# P4-A : config partagée entre l'éditeur local et la CI.
+line-length = 100
+target-version = "py39"
+extend-exclude = ["model.json", "demo_*.json", "demo_*.jsonl"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors (sauf E501, E402, E702)
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "E501",  # line too long (on est à 100, c'est volontaire)
+    "E402",  # module-level import not at top (utilisé pour les imports
+             #   inline lazy dans les fonctions de test)
+    "E702",  # multiple statements on one line (semicolon) — courant dans
+             #   les setups de tests
+    "B008",  # function call in default argument (utilisé pour `Path(".")`)
+    "SIM102",# collapsible if (parfois moins lisible)
+    "SIM103",# needless bool (parfois plus clair)
+    "SIM105",# contextlib.suppress (parfois verbeux)
+    "SIM108",# ternary (parfois moins lisible)
+    "SIM110",# reimplemented builtin (any() vs loop — les deux sont OK)
+    "B007",  # unused loop control variable (courant dans les fixtures)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "B011",  # assert False (utilisé dans les tests de robustesse)
+    "F401",  # imports inutilisés (certains tests re-importent pour les mocks)
+    "F811",  # redefinition of unused (utilisé pour monkey-patching)
+    "UP028", # yield in for loop (style)
+]
+
+[tool.coverage.run]
+# P4-A : config pour `coverage run -m unittest discover -s tests`.
+source = ["sentinel"]
+omit = [
+    "tests/*",
+    "tools/*",  # scripts de démo, pas du code de prod
+    # __main__ est testé via subprocess (test_p4_cli_smoke), qui n'est
+    # pas tracké par coverage. L'exclure du calcul évite de pénaliser
+    # le gate pour du code de pure plomberie CLI.
+    "sentinel/__main__.py",
+    # ctypes Windows : exécuté seulement sur Windows. L'omettre évite
+    # de faire chuter le seuil Linux.
+    "sentinel/_winapi.py",
+    # Qt : la suite cœur est unittest, sans PySide6.
+    "sentinel/gui/app.py",
+    "sentinel/gui/workers.py",
+    "sentinel/gui/__main__.py",
+]
+
+[tool.coverage.report]
+# Cibles réalistes pour un V5 (V0 → V3 étaient de la reconstruction,
+# V4-V5 de la consolidation). On vise 80% en V5 ; 90%+ en V6.
+fail_under = 75
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "\\.\\.\\.",
+]
+
+[tool.mypy]
+# mypy ≥ 2 ne cible plus 3.9. Le code reste compatible 3.9
+# (`from __future__ import annotations`) ; le typecheck CI part de 3.10,
+# comme la matrice GitHub Actions.
+python_version = "3.10"
+files = ["sentinel", "packaging"]
+show_error_codes = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = ["PySide6", "PySide6.*", "keyring", "keyring.*", "PyInstaller", "PyInstaller.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+qt_api = "pyside6"

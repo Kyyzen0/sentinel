@@ -1,0 +1,12 @@
+# Sample benign CSS
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 1rem;
+}
+
+header {
+    background: #fff;
+    color: #222;
+}

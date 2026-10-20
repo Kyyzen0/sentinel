@@ -1,0 +1,78 @@
+{
+  "findings": [
+    {
+      "rule_id": "SIG-0007",
+      "severity": "high",
+      "path": "authorized_keys",
+      "line": 1,
+      "message": "Cl\u00e9 SSH publique ajout\u00e9e dans authorized_keys",
+      "evidence": "ssh-ed25519"
+    },
+    {
+      "rule_id": "SIG-0007",
+      "severity": "high",
+      "path": "authorized_keys",
+      "line": 2,
+      "message": "Cl\u00e9 SSH publique ajout\u00e9e dans authorized_keys",
+      "evidence": "ssh-ed25519"
+    },
+    {
+      "rule_id": "SIG-0019",
+      "severity": "high",
+      "path": "authorized_keys",
+      "line": 2,
+      "message": "Cl\u00e9 SSH ajout\u00e9e \u00e0 authorized_keys (int\u00e9grit\u00e9 \u00d7 signature)",
+      "evidence": "ssh-ed25519 <nouvelle cl\u00e9>"
+    },
+    {
+      "rule_id": "SIG-0018",
+      "severity": "high",
+      "path": "tool",
+      "line": 1,
+      "message": "Bit SUID acquis (mode=0o4755)",
+      "evidence": "SUID=0o4000"
+    },
+    {
+      "rule_id": "SIG-0002",
+      "severity": "critical",
+      "path": "etc/systemd/system/backdoor.service",
+      "line": 2,
+      "message": "Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)",
+      "evidence": "bash -i"
+    },
+    {
+      "rule_id": "SIG-0017",
+      "severity": "critical",
+      "path": "etc/systemd/system/backdoor.service",
+      "line": 2,
+      "message": "Unit\u00e9 systemd avec ExecStart suspect (reverse-shell, dropper, ou mineur)",
+      "evidence": "bash -i"
+    }
+  ],
+  "severity_counts": {
+    "critical": 2,
+    "high": 4,
+    "medium": 0,
+    "low": 0
+  },
+  "overall_severity": "critical",
+  "integrity": {
+    "added": [
+      "etc/systemd/system/backdoor.service"
+    ],
+    "removed": [],
+    "modified": [
+      "authorized_keys"
+    ],
+    "mode_changed": [
+      "tool"
+    ]
+  },
+  "integrity_counts": {
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "mode_changed": 1
+  },
+  "anomalies": []
+}

