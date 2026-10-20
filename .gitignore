@@ -49,3 +49,6 @@ tests/fixtures/benign_large/
 # Fichiers de demo V4 (générés par tools/make_demo_v4.py — la baseline
 # pointe vers un temp dir disparu, le rapport est régénérable).
 demo_v4_baseline.json
+.env
+*.mobileprovision
+*.keychain-db
