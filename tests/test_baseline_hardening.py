@@ -177,9 +177,8 @@ class TestSensitivePlaintextBaseline(unittest.TestCase):
                 report = scan_folder(root, baseline=bl)
             rules = {f.rule_id for f in report.findings}
             self.assertIn("SIG-0007", rules)
-            self.assertNotIn("SIG-0019", rules)
-            self.assertIn("SIG-0019", err.getvalue())
-            self.assertIn("sensible", err.getvalue())
+            self.assertIn("SIG-0019", rules)
+            self.assertNotIn("SIG-0019", err.getvalue())
 
 
 class TestBaselineSignature(unittest.TestCase):

@@ -73,6 +73,7 @@ class RuleContext:
     file_mode: int | None = None  # st_mode brut du fichier scanné
     baseline_text: str | None = None  # contenu du même fichier dans la baseline
     baseline_mode: int | None = None  # mode du même fichier dans la baseline
+    baseline_ssh_fingerprints: frozenset[str] | None = None
 
 
 @dataclass

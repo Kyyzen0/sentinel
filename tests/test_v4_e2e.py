@@ -50,7 +50,7 @@ class TestV4EndToEnd(unittest.TestCase):
             self.assertIn("SIG-0018", sigs)
 
     def test_authorized_keys_not_embedded_and_sig0019_announced(self) -> None:
-        """Baseline en clair : la clé n'est pas dans le JSON, SIG-0019 est annoncée."""
+        """Baseline sans contenu en clair : SIG-0019 détecte la clé ajoutée."""
         with tempfile.TemporaryDirectory() as td:
             td = Path(td)
             ak = td / "authorized_keys"
@@ -86,8 +86,8 @@ class TestV4EndToEnd(unittest.TestCase):
             data = json.loads(r.stdout)
             sigs = {f["rule_id"] for f in data["findings"]}
             self.assertIn("SIG-0007", sigs)
-            self.assertNotIn("SIG-0019", sigs)
-            self.assertIn("SIG-0019", r.stderr)
+            self.assertIn("SIG-0019", sigs)
+            self.assertNotIn("SIG-0019", r.stderr)
 
     def test_malicious_systemd_unit_is_detected(self) -> None:
         with tempfile.TemporaryDirectory() as td:
