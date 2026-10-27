@@ -685,3 +685,36 @@ Trouvés en exécutant l'outil, pas seulement la suite de tests :
   paquet `sentinel/` en Python 3.10+. `requires-python` est `>=3.10`.
 
 Spécification détaillée : `SPEC.md`.
+
+## Couverture et triage des alertes
+
+Les rapports texte, JSON et SARIF présentent la couverture des signatures :
+`scanned_files` compte les fichiers texte lus jusqu'au bout ; `binary_files`
+liste ceux reconnus comme binaires ; `unreadable_paths` contient les chemins
+illisibles ; `disappeared_files` les fichiers disparus pendant le scan.
+`excluded_entries` liste les éléments volontairement écartés (par exemple
+`__pycache__` et les liens non suivis). Un dossier exclu compte pour **une
+entrée** : le nombre de fichiers qu'il contient n'est pas connu. Les dossiers
+illisibles représentent aussi des sous-arbres de taille inconnue. Ces comptes
+ne mesurent pas la couverture des menaces. L'interface affiche ce résumé et
+les conseils de triage au survol d'une alerte.
+
+Chaque alerte inclut un extrait déclencheur, une limite d'interprétation et
+une vérification conseillée. Ces indications aident au triage et ne prouvent
+pas qu'un fichier est malveillant.
+
+Pour écarter un seul constat lors d'un scan CLI, copiez sa valeur
+`suppression_fingerprint` depuis le rapport et ajoutez une ligne dans le
+fichier passé à `--ignore-file` (par défaut `.sentinelignore` dans le dossier
+courant) :
+
+```text
+FINGERPRINT <empreinte-hexadécimale-de-64-caractères> Exemple de test vérifié 2026-10-27
+```
+
+La justification est obligatoire. L'empreinte dépend de la règle, du chemin,
+de la ligne, du message, de l'extrait et d'un hash de la ligne complète : si
+ces éléments changent, l'alerte doit être réexaminée. Les alertes filtrées et
+leur motif restent dans les rapports texte, JSON et SARIF. Les anciennes
+règles d'exclusion par motif restent utilisables. Ce filtre est appliqué par
+la commande `scan` ; l'interface ne lit pas encore `.sentinelignore`.

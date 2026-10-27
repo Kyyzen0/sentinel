@@ -21,6 +21,7 @@ justification et la date sont stockées pour audit.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from fnmatch import fnmatch
 from pathlib import Path
@@ -44,6 +45,7 @@ class IgnoreRule:
     path_pattern: str  # "anywhere", "vendor/*.php", etc.
     reason: str = ""  # justification humaine
     date: str = ""  # ISO date d'ajout
+    fingerprint: str = ""  # empreinte exacte (format v1)
 
 
 @dataclass
@@ -76,6 +78,14 @@ def parse_ignore_file(path: Path) -> IgnoreFile:
         rule_id = parts[0]
         path_pat = parts[1]
         reason = parts[2] if len(parts) >= 3 else ""
+        if rule_id == "FINGERPRINT":
+            if not re.fullmatch(r"[0-9a-f]{64}", path_pat) or not reason.strip():
+                print(
+                    f"⚠ .sentinelignore:{lineno} empreinte ou justification invalide",
+                    file=__import__("sys").stderr,
+                )
+                out.skipped.append(line)
+                continue
         # Extrait la date (YYYY-MM-DD) si elle est en fin de `reason`.
         import re as _re
 
@@ -83,12 +93,19 @@ def parse_ignore_file(path: Path) -> IgnoreFile:
         date = m.group(1) if m else ""
         if m:
             reason = reason[: m.start()].rstrip()
+        if rule_id == "FINGERPRINT" and not reason:
+            print(
+                f"⚠ .sentinelignore:{lineno} justification manquante", file=__import__("sys").stderr
+            )
+            out.skipped.append(line)
+            continue
         out.rules.append(
             IgnoreRule(
                 rule_id=rule_id,
                 path_pattern=path_pat,
                 reason=reason,
                 date=date,
+                fingerprint=path_pat if rule_id == "FINGERPRINT" else "",
             )
         )
     return out
@@ -96,6 +113,8 @@ def parse_ignore_file(path: Path) -> IgnoreFile:
 
 def _matches(finding: Finding, rule: IgnoreRule) -> bool:
     """Vrai si le finding matche la règle d'ignore."""
+    if rule.fingerprint:
+        return rule.fingerprint == finding.suppression_fingerprint()
     rule_ok = rule.rule_id == finding.rule_id or rule.rule_id == "*"
     if not rule_ok:
         return False
@@ -180,6 +199,10 @@ def apply_ignore(
         top_n=report.top_n,
         skipped_external=getattr(report, "skipped_external", []),
         unreadable=list(getattr(report, "unreadable", []) or []),
+        scanned_files=report.scanned_files,
+        binary_files=list(report.binary_files),
+        excluded_entries=list(report.excluded_entries),
+        disappeared_files=list(report.disappeared_files),
     )
     # Copie les attributs additionnels.
     if hasattr(report, "ignored_findings"):

@@ -18,6 +18,19 @@ class Finding:
     line: int  # 1-indexed
     message: str  # description courte (FR)
     evidence: str  # extrait déclencheur
+    context_digest: str = ""  # empreinte de la ligne, sans conserver son contenu
+
+    def suppression_fingerprint(self) -> str:
+        """Identifie un constat précis, y compris son extrait."""
+        parts = (
+            self.rule_id,
+            self.path,
+            str(self.line),
+            self.message,
+            self.evidence,
+            self.context_digest,
+        )
+        return hashlib.sha256("\0".join(parts).encode("utf-8")).hexdigest()
 
     def fingerprint(self) -> str:
         """P3-2 : identifiant stable d'un finding à travers les runs.
@@ -93,6 +106,10 @@ class Report:
     # Chemins relatifs qu'on n'a pas pu lister ou lire (permissions, EIO).
     # Un binaire volontairement ignoré n'y figure pas. Non vide → exit 3.
     unreadable: list[str] = field(default_factory=list)
+    scanned_files: int = 0
+    binary_files: list[str] = field(default_factory=list)
+    excluded_entries: list[str] = field(default_factory=list)
+    disappeared_files: list[str] = field(default_factory=list)
 
     @property
     def severity_counts(self) -> dict[str, int]:
