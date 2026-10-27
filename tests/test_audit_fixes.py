@@ -76,8 +76,7 @@ class TestEmptyBaselineContent(unittest.TestCase):
     def test_authorized_keys_content_is_redacted_and_sig0019_is_announced(self) -> None:
         """Le clair d'authorized_keys ne va plus dans la baseline.
 
-        SIG-0019 ne peut plus comparer : on l'annonce, et SIG-0007 voit
-        toujours la clé dans le fichier actuel.
+        Les empreintes permettent à SIG-0019 de détecter une clé ajoutée.
         """
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
@@ -95,8 +94,8 @@ class TestEmptyBaselineContent(unittest.TestCase):
                 report = scan_folder(root, baseline=baseline)
             rules = {f.rule_id for f in report.findings}
             self.assertIn("SIG-0007", rules)
-            self.assertNotIn("SIG-0019", rules)
-            self.assertIn("SIG-0019", err.getvalue())
+            self.assertIn("SIG-0019", rules)
+            self.assertNotIn("SIG-0019", err.getvalue())
 
 
 class TestSshKeyOptions(unittest.TestCase):

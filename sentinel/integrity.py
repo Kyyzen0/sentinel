@@ -18,8 +18,8 @@ document lui-même est signé (HMAC-SHA256). La comparaison reste possible
 
 Sans clé, le contenu des petits fichiers ordinaires reste embarqué. Les
 fichiers évidemment sensibles (clé privée / SIG-0008, `authorized_keys`,
-`.env`, …) n'embarquent que le SHA-256 : SIG-0019 est alors désactivée
-et le scan l'annonce, comme pour une baseline chiffrée.
+`.env`, …) ne stockent pas leur contenu. Pour `authorized_keys` jusqu'à
+64 Kio, des empreintes des clés publiques permettent la comparaison SIG-0019.
 
 Les fichiers plus gros que `_CONTENT_MAX` ne stockent que le hash. Pour
 les lire plus tard, le dossier référencé par `root` doit être accessible.
@@ -45,7 +45,7 @@ from pathlib import Path
 from .files import is_ignored
 from .models import IntegrityDiff
 from .platform import OperationCancelled, file_owner, is_link, read_link
-from .signatures import Sig0008
+from .signatures import Sig0008, _extract_all_ssh_keys, _ssh_fingerprint
 
 # Au-delà de cette taille, on n'embarque pas le contenu dans la baseline
 # (évite de gonfler le JSON pour des binaires ou de gros logs).
@@ -204,6 +204,7 @@ class Entry:
     # marqueur SIG-0008). None sur les baselines anciennes et les fichiers
     # ordinaires. Distinct d'un contenu absent parce que le fichier est gros.
     content_redacted: str | None = None
+    ssh_key_fingerprints: list[str] | None = None
     # P0-4 : uid/gid du fichier. Sur les liens symboliques, c'est l'uid/gid
     # du lien lui-même (et non de la cible), conformément à `os.lstat()`.
     # None = inconnu (baseline V1 qui ne les stockait pas) : la comparaison
@@ -280,6 +281,7 @@ def _entry_from(p: Path, root: Path, *, encrypt_key: str | None = None) -> Entry
     content: str | None = None
     hmac_sha256: str | None = None
     content_redacted: str | None = None
+    ssh_key_fingerprints: list[str] | None = None
 
     if is_link(p):
         # On ne lit pas la cible (elle peut être hors périmètre), on
@@ -300,14 +302,19 @@ def _entry_from(p: Path, root: Path, *, encrypt_key: str | None = None) -> Entry
                 sha = ""
             else:
                 sha = hashlib.sha256(raw).hexdigest() if raw else ""
+                if p.name == "authorized_keys":
+                    ssh_key_fingerprints = sorted(
+                        _ssh_fingerprint(k)
+                        for k in _extract_all_ssh_keys(raw.decode("utf-8", errors="replace"))
+                    )
                 sensitive = _sensitive_name(p.name) or (bool(raw) and _private_key_bytes(raw))
                 if raw:
                     if encrypt_key is not None:
                         hmac_sha256 = _hmac_content(encrypt_key, raw)
                     elif sensitive:
                         # Hash seul : le clair (clé, authorized_keys, .env)
-                        # ne sort pas dans le JSON. SIG-0019 ne peut plus
-                        # comparer et le scan l'annonce.
+                        # ne sort pas dans le JSON. Les empreintes des clés
+                        # publiques permettent la comparaison SIG-0019.
                         content_redacted = "sensitive"
                     else:
                         content = raw.decode("utf-8", errors="replace")
@@ -338,6 +345,7 @@ def _entry_from(p: Path, root: Path, *, encrypt_key: str | None = None) -> Entry
         content=content,
         hmac_sha256=hmac_sha256,
         content_redacted=content_redacted,
+        ssh_key_fingerprints=ssh_key_fingerprints,
         uid=None if os.name == "nt" else st.st_uid,
         gid=None if os.name == "nt" else st.st_gid,
         capabilities=_read_capabilities(p),

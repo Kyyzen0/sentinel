@@ -1,5 +1,7 @@
 # SENTINEL — analyse de sécurité locale orientée fichiers (V4)
 
+Version du paquet : **3.0.0**. Les mentions V1 à V5 ci-dessous désignent des étapes historiques du moteur et de ses corrections, pas des versions distinctes du paquet.
+
 Analyse un dossier : détecte des **indicateurs d'intrusion connus** (signatures),
 les **modifications** par rapport à une référence (baseline), et un **score
 d'anomalie par fichier** (V2 heuristique ou **V3 neuronal — autoencodeur**).
@@ -420,15 +422,13 @@ casse la signature. `scan` et `watch`, une fois la signature vérifiée,
 affichent un avis : cette baseline vient d'une confiance initiale.
 
 `key_check` permet toujours de répondre « mauvaise clé » (exit 2) avant
-même de parler de signature. **SIG-0019 est désactivée** sur une baseline
-chiffrée — un HMAC n'est pas réversible — et le scan le dit.
+même de parler de signature. Les nouvelles baselines conservent les empreintes SHA-256 des clés publiques de `authorized_keys` (jusqu'à 64 Kio), y compris avec une clé HMAC. SIG-0019 peut ainsi comparer les clés sans conserver les lignes ou commentaires. Ces empreintes révèlent toutefois si une clé publique connue est présente : protégez la baseline. Les anciennes baselines et les fichiers plus grands restent sans cet historique.
 
 Sans clé, les petits fichiers ordinaires gardent leur contenu (SIG-0019
 peut comparer). Les fichiers évidemment sensibles ne l'embarquent plus,
 seulement leur SHA-256 : clé privée (marqueurs SIG-0008, quel que soit le
 nom), `authorized_keys`, `id_rsa` et équivalents, `.pem` / `.key`, `.env`.
-SIG-0019 est désactivée pour eux et **annoncée**, comme pour une baseline
-chiffrée. SIG-0007 continue de voir les clés présentes dans le fichier
+Pour `authorized_keys` jusqu’à 64 Kio, les empreintes des clés permettent à SIG-0019 de fonctionner sans conserver le contenu. Pour les anciennes baselines sans empreintes, la limite est annoncée. SIG-0007 continue de voir les clés présentes dans le fichier
 actuel. Un `.env.example` / `.env.sample` / `.env.template` n'est pas traité
 comme un secret par son nom.
 
@@ -651,16 +651,14 @@ Trouvés en exécutant l'outil, pas seulement la suite de tests :
 - SIG-0007/0014/0015 dépendent du nom de fichier (`authorized_keys`, `.bashrc`, `sudoers`).
 - SIG-0016 ignore `/var/tmp` ; SIG-0009 ignore les lignes `#` et les fences Markdown.
 - Score d'anomalie (V2 ou V3) n'influe **jamais** sur l'exit code.
-- Pas de temps réel, pas de réseau, pas de remédiation (V4 ajoute `watch`,
-  toujours inspect-only).
+- `watch` surveille les fichiers (événements ou polling) ; il ne surveille ni le réseau ni les processus. La quarantaine est une action manuelle, pas une protection automatique.
 - Trainset V3 dépendant d'un corpus d'entraînement : sans `--model` ou
   avec un modèle absent, fallback heuristique (annoté `autoencoder:untrained`).
 - V4 : `watchdog` est *optionnel* ; sans, fallback polling (intervalle ≥ 1 s
   recommandé ; le défaut CLI est 2 s).
 - La baseline JSON embarque le contenu des fichiers **non sensibles** ≤ 64 KB
   pour SIG-0019. Au-delà, ou si le fichier est sensible (clé, `authorized_keys`,
-  `.env`, …), ou si la baseline est chiffrée : pas de clair, SIG-0019 annoncée
-  désactivée. Pas de relecture du fichier actuel comme historique.
+  `.env`, …), ou si la baseline est chiffrée : pas de clair. Les nouvelles baselines conservent les empreintes de clés publiques pour `authorized_keys` jusqu’à 64 Kio ; les anciennes baselines sans empreintes ne permettent pas cette comparaison. Pas de relecture du fichier actuel comme historique.
 - `train` ignore les symlinks par défaut (même politique que `scan`),
   ainsi que les jonctions et points de reparse Windows.
   `--follow-links` ne suit une cible que si elle reste dans le corpus,
@@ -718,3 +716,17 @@ ces éléments changent, l'alerte doit être réexaminée. Les alertes filtrées
 leur motif restent dans les rapports texte, JSON et SARIF. Les anciennes
 règles d'exclusion par motif restent utilisables. Ce filtre est appliqué par
 la commande `scan` ; l'interface ne lit pas encore `.sentinelignore`.
+
+## Interpréter les résultats
+
+Les signatures ne couvrent pas tous les logiciels malveillants et les binaires
+sont ignorés par l'analyse de contenu. Des exemples ou commentaires peuvent
+aussi déclencher des alertes : vérifiez le contexte avant une quarantaine.
+Les scores heuristiques et neuronaux ne sont pas des probabilités de menace ;
+aucune mesure indépendante de leur précision n'est fournie. Évaluez-les sur
+un corpus séparé de l'entraînement, étiqueté et représentatif, avec faux
+positifs et faux négatifs, avant de fixer un seuil opérationnel.
+
+Créez la baseline depuis un état vérifié et protégez-la ainsi que sa clé ;
+une signature prouve l'intégrité de la baseline, pas la propreté initiale du
+système. Pour refuser une baseline non signée, utilisez `--require-signed`.

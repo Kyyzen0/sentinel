@@ -302,7 +302,8 @@ def scan_folder(
         # présent mais à None doit déclencher le warning, pas seulement
         # l'absence de la clé.
         baseline_text = baseline_text_from_entry(b_entry)
-        if b_entry is not None and baseline_text is None:
+        fingerprints = b_entry.get("ssh_key_fingerprints") if b_entry else None
+        if b_entry is not None and baseline_text is None and fingerprints is None:
             if b_entry.get("content_redacted") == "sensitive":
                 sensitive_redacted.append(rel)
             else:
@@ -313,6 +314,7 @@ def scan_folder(
             file_mode=file_mode,
             baseline_text=baseline_text,
             baseline_mode=baseline_mode,
+            baseline_ssh_fingerprints=frozenset(fingerprints) if fingerprints is not None else None,
         )
 
         # P0-5 : la normalisation est appliquée par fenêtre (1 ligne → 1
