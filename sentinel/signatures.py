@@ -8,8 +8,8 @@ V2 : + SIG-0011 (JSP/ASP), + SIG-0013 (htaccess), + SIG-0014 (.bashrc/.profile/.
 
 from __future__ import annotations
 
-import re
 import hashlib
+import re
 from collections.abc import Iterable
 from pathlib import PurePosixPath
 from typing import Any
@@ -973,7 +973,11 @@ class Sig0019(Rule):
         ctx = context or RuleContext()
         if ctx.baseline_ssh_fingerprints is not None:
             current_keys = _extract_all_ssh_keys(text)
-            added = {key for key in current_keys if _ssh_fingerprint(key) not in ctx.baseline_ssh_fingerprints}
+            added = {
+                key
+                for key in current_keys
+                if _ssh_fingerprint(key) not in ctx.baseline_ssh_fingerprints
+            }
         elif ctx.baseline_text is not None:
             added = _extract_all_ssh_keys(text) - _extract_all_ssh_keys(ctx.baseline_text)
         else:

@@ -303,7 +303,10 @@ def _entry_from(p: Path, root: Path, *, encrypt_key: str | None = None) -> Entry
             else:
                 sha = hashlib.sha256(raw).hexdigest() if raw else ""
                 if p.name == "authorized_keys":
-                    ssh_key_fingerprints = sorted(_ssh_fingerprint(k) for k in _extract_all_ssh_keys(raw.decode("utf-8", errors="replace")))
+                    ssh_key_fingerprints = sorted(
+                        _ssh_fingerprint(k)
+                        for k in _extract_all_ssh_keys(raw.decode("utf-8", errors="replace"))
+                    )
                 sensitive = _sensitive_name(p.name) or (bool(raw) and _private_key_bytes(raw))
                 if raw:
                     if encrypt_key is not None:

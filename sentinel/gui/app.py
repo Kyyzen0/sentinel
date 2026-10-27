@@ -53,6 +53,7 @@ from PySide6.QtWidgets import (
 )
 
 from sentinel import __version__
+from sentinel.guidance import guidance
 from sentinel.models import Report
 from sentinel.platform import UnsafeNtPath, unsafe_nt_message
 from sentinel.quarantine import (
@@ -783,6 +784,10 @@ class ScanPage(QWidget):
                 QStandardItem(finding.path),
                 QStandardItem(f"{finding.message} — {finding.evidence}"),
             ]
+            details = guidance(finding.rule_id)
+            cells[3].setToolTip(
+                f"{details['limitation']}\n{details['check']}\nEmpreinte : {finding.suppression_fingerprint()}"
+            )
             color = QColor(_SEVERITY_COLOR.get(finding.severity, "#e8eaed"))
             cells[0].setForeground(color)
             for cell in cells:
@@ -802,7 +807,9 @@ class ScanPage(QWidget):
             self.model.appendRow(cells)
         summary = (
             f"{len(report.findings)} finding(s), exit {report.exit_code}. "
-            f"Illisibles : {len(report.unreadable)}."
+            f"Analysés : {report.scanned_files} ; binaires : {len(report.binary_files)} ; "
+            f"éléments exclus : {len(report.excluded_entries)} ; "
+            f"illisibles : {len(report.unreadable)} ; disparus : {len(report.disappeared_files)}."
         )
         if integrity:
             summary += "\n" + "\n".join(integrity)

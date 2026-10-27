@@ -168,7 +168,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "--ignore-file",
         type=Path,
         default=Path(".sentinelignore"),
-        help="P3-1 : chemin du fichier d'ignore (règle + chemin + justification). "
+        help="Chemin du fichier d'ignore (règle + chemin ou FINGERPRINT + justification). "
         "Défaut ./.sentinelignore. Vide = pas de filtre.",
     )
     s.add_argument(

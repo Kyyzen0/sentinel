@@ -6,6 +6,7 @@ import json
 from typing import Any
 
 from . import __version__
+from .guidance import guidance
 from .models import Report
 
 # Le rapport texte ne liste que les scores élevés. Le JSON garde tout.
@@ -30,6 +31,9 @@ def _ignored_payload(report: Report) -> list[dict[str, Any]]:
                 "path": getattr(finding, "path", None),
                 "line": getattr(finding, "line", None),
                 "message": getattr(finding, "message", None),
+                "evidence": getattr(finding, "evidence", None),
+                "guidance": guidance(finding.rule_id) if finding else None,
+                "suppression_fingerprint": finding.suppression_fingerprint() if finding else None,
                 "reason": entry.get("reason", ""),
                 "ignore_rule": getattr(rule, "rule_id", None),
                 "ignore_path": getattr(rule, "path_pattern", None),
@@ -62,6 +66,8 @@ def render_json(report: Report, *, indent: int | None = 2) -> str:
                 "message": f.message,
                 "evidence": f.evidence,
                 "fingerprint": f.fingerprint(),
+                "suppression_fingerprint": f.suppression_fingerprint(),
+                "guidance": guidance(f.rule_id),
             }
             for f in report.findings
         ],
@@ -96,6 +102,13 @@ def render_json(report: Report, *, indent: int | None = 2) -> str:
             }
             for a in report.anomalies
         ],
+        "coverage": {
+            "scanned_files": report.scanned_files,
+            "binary_files": list(report.binary_files),
+            "excluded_entries": list(report.excluded_entries),
+            "disappeared_files": list(report.disappeared_files),
+            "unreadable_paths": list(report.unreadable),
+        },
         "skipped_external": list(getattr(report, "skipped_external", [])),
         # Chemins non lus (permissions). Exit code 3 si la liste n'est pas vide.
         "unreadable": list(getattr(report, "unreadable", [])),
@@ -170,6 +183,10 @@ def render_sarif(report: Report) -> str:
                         },
                     }
                 ],
+                "properties": {
+                    "guidance": guidance(f.rule_id),
+                    "suppressionFingerprint": f.suppression_fingerprint(),
+                },
                 "partialFingerprints": {
                     # P3-2 : fingerprint stable pour suivre un constat d'un
                     # run à l'autre dans l'UI GitHub.
@@ -207,6 +224,8 @@ def render_sarif(report: Report) -> str:
                 "partialFingerprints": {"sentinelFingerprint/v1": f.fingerprint()},
                 "properties": {
                     "justification": justification,
+                    "guidance": guidance(f.rule_id),
+                    "suppressionFingerprint": f.suppression_fingerprint(),
                     "date": getattr(rule, "date", "") if rule else "",
                 },
             }
@@ -224,6 +243,15 @@ def render_sarif(report: Report) -> str:
                         "informationUri": "https://github.com/Kyyzen0/sentinel",
                         "rules": sarif_rules,
                     },
+                },
+                "properties": {
+                    "coverage": {
+                        "scanned_files": report.scanned_files,
+                        "binary_files": list(report.binary_files),
+                        "excluded_entries": list(report.excluded_entries),
+                        "unreadable_paths": list(report.unreadable),
+                        "disappeared_files": list(report.disappeared_files),
+                    }
                 },
                 "results": results,
             }
@@ -252,6 +280,18 @@ def render_text(report: Report) -> str:
         f"owner_changed={len(report.integrity.owner_changed)} "
         f"cap_changed={len(report.integrity.cap_changed)}"
     )
+    lines.append(
+        f"coverage: scanned_files={report.scanned_files} binary_files={len(report.binary_files)} "
+        f"excluded_entries={len(report.excluded_entries)} unreadable_paths={len(report.unreadable)} "
+        f"disappeared_files={len(report.disappeared_files)}"
+    )
+    for label, paths in (
+        ("binary_files", report.binary_files),
+        ("excluded_entries", report.excluded_entries),
+        ("disappeared_files", report.disappeared_files),
+    ):
+        if paths:
+            lines.append(f"{label}: " + ", ".join(paths))
     unreadable = list(getattr(report, "unreadable", []) or [])
     if unreadable:
         lines.append("")
@@ -267,6 +307,9 @@ def render_text(report: Report) -> str:
             lines.append(f"[{f.severity}] {f.rule_id} {f.path}:{f.line}")
             lines.append(f"  {f.message}")
             lines.append(f"  evidence: {f.evidence}")
+            lines.append(f"  limite: {guidance(f.rule_id)['limitation']}")
+            lines.append(f"  à vérifier: {guidance(f.rule_id)['check']}")
+            lines.append(f"  suppression_fingerprint: {f.suppression_fingerprint()}")
     else:
         lines.append("(aucun)")
 
@@ -306,14 +349,14 @@ def render_text(report: Report) -> str:
     # le scan silencieusement vert.
     ignored = getattr(report, "ignored_findings", []) or []
     if ignored:
-        by_reason: dict[str, int] = {}
-        for entry in ignored:
-            reason = entry.get("reason") or "(sans justification)"
-            by_reason[reason] = by_reason.get(reason, 0) + 1
         lines.append("")
         lines.append(f"ignored_findings: {len(ignored)} (filtrés, non comptés ci-dessus)")
-        for reason, count in sorted(by_reason.items(), key=lambda kv: (-kv[1], kv[0]))[:5]:
-            lines.append(f"  - {count} : {reason}")
+        for entry in ignored:
+            f = entry.get("finding")
+            if f is not None:
+                lines.append(
+                    f"  - {f.rule_id} {f.path}:{f.line} : {entry.get('reason', '')} (empreinte {f.suppression_fingerprint()})"
+                )
     return "\n".join(lines) + "\n"
 
 

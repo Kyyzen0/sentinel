@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
 from collections.abc import Callable, Iterable
 from dataclasses import replace
@@ -61,6 +62,7 @@ def _iter_text_files(
     follow_links: bool = False,
     skipped_external: list[str] | None = None,
     unreadable: list[str] | None = None,
+    excluded: list[str] | None = None,
     cancel: Callable[[], bool] | None = None,
 ) -> Iterable[Path]:
     """Itère les fichiers sous `folder`.
@@ -104,11 +106,15 @@ def _iter_text_files(
         for name in dirnames:
             child = Path(dirpath) / name
             if is_ignored(child):
+                if excluded is not None:
+                    _remember(excluded, child.relative_to(folder).as_posix())
                 continue
             # Jonction ou symlink de dossier : ne jamais descendre.
             # `followlinks=False` ne suffit pas pour une jonction que
             # Python ne classe pas comme symlink.
             if is_link(child):
+                if excluded is not None:
+                    _remember(excluded, child.relative_to(folder).as_posix())
                 if follow_links and skipped_external is not None:
                     try:
                         target = child.resolve()
@@ -121,26 +127,36 @@ def _iter_text_files(
         for name in filenames:
             p = Path(dirpath) / name
             if is_ignored(p):
+                if excluded is not None:
+                    _remember(excluded, p.relative_to(folder).as_posix())
                 continue
             # `is_file()` suit le lien : on décide avant, pour ne pas stat
             # (et encore moins lire) une cible hors corpus.
             if is_link(p):
                 if not follow_links:
+                    if excluded is not None:
+                        _remember(excluded, p.relative_to(folder).as_posix())
                     continue
                 # Containment check : la cible résolue doit rester sous `folder`.
                 try:
                     target = p.resolve()
                 except OSError:
+                    if excluded is not None:
+                        _remember(excluded, p.relative_to(folder).as_posix())
                     # Lien cassé : on skip.
                     continue
                 try:
                     target.relative_to(root_resolved)
                 except ValueError:
                     # Cible hors-confinement.
+                    if excluded is not None:
+                        _remember(excluded, p.relative_to(folder).as_posix())
                     if skipped_external is not None:
                         skipped_external.append(p.relative_to(folder).as_posix())
                     continue
             if not p.is_file():
+                if excluded is not None:
+                    _remember(excluded, p.relative_to(folder).as_posix())
                 continue
             found.append(p)
     yield from sorted(found)
@@ -174,7 +190,12 @@ def _findings_in_window(
         for finding in rule.scan(rel, text, context):
             if finding.line <= overlap_lines:
                 continue
-            adjusted = replace(finding, line=window.start_line + finding.line - 1)
+            line_text = lines[finding.line - 1] if 0 < finding.line <= len(lines) else ""
+            adjusted = replace(
+                finding,
+                line=window.start_line + finding.line - 1,
+                context_digest=hashlib.sha256(line_text.encode("utf-8")).hexdigest(),
+            )
             key = (adjusted.rule_id, adjusted.path, adjusted.line, adjusted.evidence)
             if key in seen:
                 continue
@@ -248,6 +269,7 @@ def scan_folder(
             follow_links=follow_links,
             skipped_external=report.skipped_external,
             unreadable=report.unreadable,
+            excluded=report.excluded_entries,
             cancel=cancel,
         )
     )
@@ -301,6 +323,7 @@ def scan_folder(
         try:
             findings, sample = _scan_file_rules(path, rel, context)
         except FileNotFoundError:
+            _remember(report.disappeared_files, rel)
             # Disparu entre le walk et la lecture : pas une erreur d'accès.
             continue
         except UnreadablePath:
@@ -308,9 +331,11 @@ def scan_folder(
             text_cache[path] = None
             continue
         except BinarySkipped:
+            _remember(report.binary_files, rel)
             text_cache[path] = None
             continue
         text_cache[path] = sample
+        report.scanned_files += 1
         report.findings.extend(findings)
 
     if with_anomaly:
